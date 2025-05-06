@@ -17,4 +17,6 @@ COPY app ./app
 
 RUN uv sync --locked
 
+RUN chmod +x ./entrypoint.sh
+
 ENTRYPOINT ["./entrypoint.sh"]
