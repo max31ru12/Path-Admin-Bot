@@ -1,0 +1,15 @@
+[project]
+name = "ekbot"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "aiogram>=3.20.0.post0",
+    "dotenv>=0.9.9",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.11.8",
+]
