@@ -2,20 +2,19 @@ FROM python:3.11-slim
 
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates
 
-ADD https://astral.sh/uv/install.sh /uv-installer.sh
-
-RUN sh /uv-installer.sh && rm /uv-installer.sh
+RUN pip install poetry
 
 ENV PATH="/root/.local/bin/:$PATH"
 
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
 WORKDIR /bot
 
-COPY entrypoint.sh .
-COPY ../pyproject.toml .
-COPY ../uv.lock .
-COPY ../app ./app
+COPY pyproject.toml poetry.lock alembic.ini ./
+COPY compose/entrypoint.sh ./
 
-RUN uv sync --locked
+RUN poetry install --no-root
 
 RUN chmod +x ./entrypoint.sh
 

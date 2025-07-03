@@ -12,10 +12,28 @@ services:
       - "5432:5432"
     restart: unless-stopped
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U test" ]
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER}" ]
       interval: 30s
       timeout: 10s
       retries: 5
+    networks:
+      - default
+
+  admin_bot:
+    container_name: PathAdminBot
+    depends_on:
+      - admin_database
+    build:
+      context: ./
+      dockerfile: compose/Dockerfile
+    env_file:
+      - ./.env
+    environment:
+      - DB_HOST=admin_database
+    restart: "unless-stopped"
+    volumes:
+      - ./app:/bot/app/
+      - ./migrations/:/bot/migrations/
     networks:
       - default
 

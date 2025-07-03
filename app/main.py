@@ -1,5 +1,6 @@
 import asyncio
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 from aiogram import Dispatcher, Bot, F
 from aiogram.enums import ContentType
@@ -8,10 +9,11 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.types import Message
 
-from app.config import TOKEN
+from app.config import TOKEN, TZ_INFO
 from app.database.db_config import session_factory
 from app.database.models import Meeting
 from app.keyboards import base_keyboard, KeyboardMessages, cancel_keyboard
+from app.utils import reminder_loop
 
 dp = Dispatcher()
 bot = Bot(token=TOKEN)
@@ -59,11 +61,13 @@ async def process_adding_date(message: Message, state: FSMContext):
     user_input_date = message.text.strip()
     try:
         dt = datetime.strptime(user_input_date, "%Y-%m-%d %H:%M")
+        atlanta_dt = dt.replace(tzinfo=ZoneInfo(TZ_INFO))
+        utc_dt = atlanta_dt.astimezone(ZoneInfo("UTC"))
     except ValueError:
-        await message.answer("❌ Неверный формат даты. Используй: YYYY-MM-DD HH MM\nПример: 2025-07-04 18:30")
+        await message.answer("❌ Неверный формат даты. Используй: YYYY-MM-DD HH:MM\nПример: 2025-07-04 18:30")
         return
 
-    await state.update_data(date=dt)
+    await state.update_data(date=utc_dt)
     await state.set_state(AddMeetingState.waiting_for_link)
     await message.answer("Введи ссылку для встречи", reply_markup=cancel_keyboard)
 
@@ -85,7 +89,7 @@ async def process_adding_link(message: Message, state: FSMContext):
 
     answer = (
         f"Добавлена встреча\n\n"
-        f"Время: <b>{state_data['date']}\n</b>"
+        f"Время: <b>{state_data['date'].astimezone(ZoneInfo(TZ_INFO)).strftime('%Y-%m-%d %H:%M')} (America/New_York)\n</b>"
         f"Сcылка: <a href='{input_user_link}'>{input_user_link}</a>"
     )
 
@@ -97,7 +101,13 @@ async def check_health(message: Message) -> None:
     await message.answer("Healthy")
 
 
+@dp.message(Command("chat_id"))
+async def show_chat_id(message: Message):
+    await message.answer(f"Chat ID: <code>{message.chat.id}</code>", parse_mode="HTML")
+
+
 async def main():
+    asyncio.create_task(reminder_loop(bot))
     await dp.start_polling(bot)
 
 
