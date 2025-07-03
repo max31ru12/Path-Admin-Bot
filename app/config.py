@@ -15,6 +15,6 @@ DB_NAME = getenv("DB_NAME", default="test")
 DB_USER = getenv("DB_USER", default="test")
 DB_PASSWORD = getenv("DB_PASSWORD", default="test")
 
-CHAT_ID = int(getenv("CHAT_ID", default=-4956444513))
+CHAT_ID = int(getenv("CHAT_ID"))
 
 DB_URL = f"postgresql+asyncpg://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"  # noqa
