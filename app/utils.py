@@ -5,7 +5,7 @@ from zoneinfo import ZoneInfo
 from aiogram import Bot
 from sqlalchemy import select
 
-from app.config import TZ_INFO
+from app.config import TZ_INFO, CHAT_ID
 from app.database.db_config import session_factory
 from app.database.models import Meeting
 
