@@ -30,11 +30,11 @@ async def reminder_loop(bot: Bot):
             for m in meetings:
                 delta = m.date - now
                 if not m.notified_one_day and timedelta(days=0) < delta <= timedelta(days=1):
-                    await bot.send_message(chat_id=-4956444513, text=get_answer(m), parse_mode="HTML")
+                    await bot.send_message(chat_id=CHAT_ID, text=get_answer(m), parse_mode="HTML")
                     m.notified_one_day = True
 
                 if not m.notified_two_hours and timedelta(hours=0) < delta <= timedelta(hours=2):
-                    await bot.send_message(chat_id=-4956444513, text=get_answer(m), parse_mode="HTML")
+                    await bot.send_message(chat_id=CHAT_ID, text=get_answer(m), parse_mode="HTML")
                     m.notified_two_hours = True
 
             await session.commit()
