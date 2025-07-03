@@ -1,15 +1,25 @@
 [project]
-name = "ekbot"
+name = "path-admin-bot"
 version = "0.1.0"
-description = "Add your description here"
+description = ""
+authors = [
+    {name = "Maksim",email = "maxevg72@gmail.com"}
+]
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.13"
 dependencies = [
-    "aiogram>=3.20.0.post0",
-    "dotenv>=0.9.9",
+    "python-dotenv (>=1.1.1,<2.0.0)",
+    "aiogram (>=3.20.0.post0,<4.0.0)",
+    "sqlalchemy (>=2.0.41,<3.0.0)",
+    "alembic[async] (>=1.16.2,<2.0.0)",
+    "asyncpg (>=0.30.0,<0.31.0)"
 ]
 
-[dependency-groups]
-dev = [
-    "ruff>=0.11.8",
-]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.12.1"
+

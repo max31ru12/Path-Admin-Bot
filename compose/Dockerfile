@@ -11,9 +11,9 @@ ENV PATH="/root/.local/bin/:$PATH"
 WORKDIR /bot
 
 COPY entrypoint.sh .
-COPY pyproject.toml .
-COPY uv.lock .
-COPY app ./app
+COPY ../pyproject.toml .
+COPY ../uv.lock .
+COPY ../app ./app
 
 RUN uv sync --locked
 
